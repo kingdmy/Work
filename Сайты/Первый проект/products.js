@@ -1,27 +1,16 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Товары</title>
-    <style>
-        .products {
-            display: grid;
-            grid-template-columns: repeat(3, 200px);
-            gap: 20px;
-        }
-        .product {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: center;
-        }
-        img {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-        }
-    </style>
-</head>
-<!DOCTYPE html>
+fetch('products.csv')
+    .then(response => response.text())
+    .then(data => {
+        const lines = data.split('\n');
+        const container = document.querySelector('.products');
+
+        lines.slice(1).forEach(line => {
+            const [name, price, image] = line.split(';'); // важно: ; из Excel
+
+            if (!name) return;
+
+            container.innerHTML += `
+            <!DOCTYPE html>
 <html lang="ru">
 <head>
     <link rel="stylesheet" href="style.css">
@@ -70,15 +59,15 @@
             }, 1000); 
         });
     </script>
+     <div class="product">
+                    <img src="images/${image.trim()}" alt="${name}">
+                    <h3>${name}</h3>
+                    <strong>${price} ₽</strong>
+                </div>
 </body>
 </html>
-<body>
-
-<div class="products"></div>
-
-<script src="script.js"></script>
-</body>
-</html>
-
-
-
+               
+            `;
+        });
+    })
+    .catch(error => console.error('Ошибка загрузки CSV:', error));
